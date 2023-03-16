@@ -16,12 +16,13 @@ from music21.pitch import Pitch
 
 
 class Main:
-    def __init__(self, key):
+    def __init__(self, key, interval):
         #When defining key: uppercase means major, lowercase means minor...can also use 'M'/'m' respectively
         self.key = Key(key)
         self.s = Stream()
+        self.interval = interval
     
-    #Note duration when integer is used refers to how many quarter notes it is. 1 is a quarter note, 2 is a half note, etc.
+    #Note duration when integer is used refers to many quarter notes it is. 1 is a quarter note, 2 is a half note, etc.
     def CreateStream(self):
         self.c = Note('C5')
         self.e = Note('E5')
@@ -31,25 +32,21 @@ class Main:
         self.fp = self.s.write('midi', fp='/Users/ian/Code/Python/Classes/Music/Output.midi')
     
     def Melody_in_Key(self, notes):
-        #self.key.getPitches holds all notes for the key in the octave
-        #Methods creates series of random notes in the key  between octaves 3 and 5. 
-
-
-
-        #TODO:Ensure that each subsequent note is only one interval away from the previous
         self.melody = []
         #Randomly choosing the first note
-        self.note = str(f'{random.choice(self.key.getPitches())}')
-        self.melody.append(Note(self.note))
+        self.note = Note(str(f'{random.choice(self.key.getPitches())}'))
+        self.note.duration = Duration(round(random.uniform(0.125, 1)/0.125) * 0.125)
+        self.melody.append(self.note)
         for i in range(notes-1):
-            #Randomly go up or down three semitones from the previous note in the melody
-            self.int = random.randint(-3, 3)
+            #Determining note
+            self.int = random.randint(-int(self.interval), int(self.interval))
             self.note = Pitch(self.melody[-1].name).transpose(self.int)
             self.note = Note(self.note)
+            #Determines duration
+            self.note.duration = Duration(round(random.uniform(0.125, 1)/0.125) * 0.125)
+            self.octave = 3
             self.melody.append(self.note)
-            pass
-
-
+        #Adds melody to stream
         for i in self.melody:
             self.s.append(i)
         self.s.append(Note(self.key.getTonic()))
@@ -58,5 +55,6 @@ class Main:
             
 
 if __name__ == "__main__":
-    App = Main('Cm')
-    App.Melody_in_Key(random.randint(5, 20))
+    App = Main('Cm', interval=1)
+    App.Melody_in_Key(notes=random.randint(5, 5))
+
