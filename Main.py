@@ -38,17 +38,22 @@ class Main:
 
         #TODO:Ensure that each subsequent note is only one interval away from the previous
         self.melody = []
-        for i in range(notes):
-            self.note = str(f'{random.choice(self.key.getPitches())}_')
-            self.note = list(self.note); self.note.pop(); self.note[-1] = random.randint(3, 5); self.note = ''.join(str(x) for x in self.note)
-            print(self.note)
-            self.melody.append(Note(self.note))
+        #Randomly choosing the first note
+        self.note = str(f'{random.choice(self.key.getPitches())}')
+        self.melody.append(Note(self.note))
+        for i in range(notes-1):
+            #Randomly go up or down three semitones from the previous note in the melody
+            self.int = random.randint(-3, 3)
+            self.note = Pitch(self.melody[-1].name).transpose(self.int)
+            self.note = Note(self.note)
+            self.melody.append(self.note)
+            pass
+
+
         for i in self.melody:
             self.s.append(i)
         self.s.append(Note(self.key.getTonic()))
-        print(self.key.getTonic())
         self.fp = self.s.write('midi', fp='/Users/ian/Code/Python/Classes/Music/Output.midi')
-        #print(Interval(Pitch('D'), Pitch('C#')).semitones)
 
             
 
