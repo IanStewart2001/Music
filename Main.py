@@ -1,6 +1,4 @@
 #!/usr/local/bin/python3
-#TODO:File currently outputs MIDI file that works in Reaper.
-#TODO:Write method that auto generates melody based on input key and various other parameters
 import random
 import roman
 from music21.chord import Chord
@@ -26,9 +24,16 @@ class Main:
         self.chord_stream = Stream()
     
     def Melody_in_Key(self, notes):
-        #TODO:Randomly insert rests in melody
+        #TODO: Change this method so that the melody follows the created chord progression
         self.melody = []
-        #Randomly choosing the first note
+        #TODO:For each section of the midi track covered by a certain chord...choose notes from that chord to play for that part of the midi track
+        #for each chord/duration in midi track:
+        #random.choice(notes in chord)
+
+
+
+
+        '''
         self.note = Note(str(f'{random.choice(self.key.getPitches())}'))
         self.note.duration = Duration(round(random.uniform(0.125, 1)/0.125) * 0.125)
         self.melody.append(self.note)
@@ -46,19 +51,16 @@ class Main:
             self.s.append(i)
         self.s.append(Note(self.key.getTonic()))
         self.fp = self.s.write('midi', fp='/Users/ian/Code/Python/Classes/Music/Melody.midi')
+        '''
 
-    def Standard_Progression(self, seventh=False):
-    #Proposed function for I IV V Progression
+    def Standard_Progression(self, seventh = False, make_melody = False):
         self.chords = []
-    #If I want to ensure each chord is a seventh, add "self.scale[6]"
-        #TODO:Below code through index error when it comes to the 4th, 5th, 6th chord etc. because it goes past the final item in the self.scale attribute. Find a way to loop back through the scale or iterate through the scale of the particular chord.
         for interval in self.progression:
             note = roman.roman_to_int(interval)
             print(f'Note: {note}')
             #If minor chord:
             if str(interval).islower == True:
                 try:
-                    #chord = Chord([self.scale[note-1], self.scale[note+2], self.scale[note+2]])
                     scale = Key(f"{self.scale[note-1]}m").getPitches()
                     chord_notes = [scale[0], scale[2], scale[4]]
                     if seventh == True:
@@ -71,7 +73,6 @@ class Main:
             #If major chord    
             else:
                 try:
-                    #chord = Chord([self.scale[note-1], self.scale[note+1], self.scale[note+3]])
                     scale = Key(f"{self.scale[note-1]}").getPitches()
                     chord_notes = [scale[0], scale[2], scale[4]]
                     if seventh == True:
@@ -84,6 +85,9 @@ class Main:
         for i in self.chords:
             self.chord_stream.append(i)
         self.fp = self.chord_stream.write('midi', fp='/Users/ian/Code/Python/Classes/Music/Chord_Progression.midi')
+        if make_melody == True:
+            self.Melody_in_Key()
+
 
 
 
@@ -91,7 +95,7 @@ class Main:
 
 
 if __name__ == "__main__":
-    App = Main(key='A', interval=1, progression=['I', 'IV', 'vi','V', 'I'])
-    #App.Melody_in_Key(notes=random.randint(5, 5))
-    App.Standard_Progression()
+    App = Main(key='A', interval=1, progression=['I', 'vi', 'IV', 'V', 'I'])
+    App.Melody_in_Key(notes=random.randint(5, 5))
+    App.Standard_Progression(seventh=True)
 
