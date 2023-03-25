@@ -47,7 +47,7 @@ class Main:
         self.s.append(Note(self.key.getTonic()))
         self.fp = self.s.write('midi', fp='/Users/ian/Code/Python/Classes/Music/Melody.midi')
 
-    def Standard_Progression(self, seventh):
+    def Standard_Progression(self, seventh=False):
     #Proposed function for I IV V Progression
         self.chords = []
     #If I want to ensure each chord is a seventh, add "self.scale[6]"
@@ -60,7 +60,10 @@ class Main:
                 try:
                     #chord = Chord([self.scale[note-1], self.scale[note+2], self.scale[note+2]])
                     scale = Key(f"{self.scale[note-1]}m").getPitches()
-                    chord = Chord([scale[0], scale[2], scale[4]])
+                    chord_notes = [scale[0], scale[2], scale[4]]
+                    if seventh == True:
+                        chord = chord_notes.append(scale[6])
+                    chord = Chord(chord_notes)
                     self.chords.append(chord)
                     print(f"Chord: {chord}")
                 except IndexError:
@@ -70,7 +73,10 @@ class Main:
                 try:
                     #chord = Chord([self.scale[note-1], self.scale[note+1], self.scale[note+3]])
                     scale = Key(f"{self.scale[note-1]}").getPitches()
-                    chord = Chord([scale[0], scale[2], scale[4]])
+                    chord_notes = [scale[0], scale[2], scale[4]]
+                    if seventh == True:
+                        chord_notes.append(scale[6])
+                    chord = Chord(chord_notes)
                     self.chords.append(chord)
                     print(f"Chord: {chord}")
                 except IndexError:
