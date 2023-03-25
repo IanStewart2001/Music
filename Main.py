@@ -47,42 +47,37 @@ class Main:
         self.s.append(Note(self.key.getTonic()))
         self.fp = self.s.write('midi', fp='/Users/ian/Code/Python/Classes/Music/Melody.midi')
 
-    def Chord_Progression(self):
-        #Proposed function for I IV V Progression
-        self.chords = []
-        #If I want to ensure each chord is a seventh, add "self.scale[6]"
-        for interval in self.progression:
-            chord = Chord([self.scale[roman.roman_to_int(interval)-1], random.choice(self.key.getPitches()), random.choice(self.key.getPitches()), random.choice(self.key.getPitches()), random.choice(self.key.getPitches())]); self.chords.append(chord)
-        #TODO:Add feature to iterate through each chord and remove notes that are one semitone apart to avoid clashing
-        for i in self.chords:
-            self.chord_stream.append(i)
-        self.fp = self.chord_stream.write('midi', fp='/Users/ian/Code/Python/Classes/Music/Chord_Progression.midi')
-
-    def Seventh_Progression(self):
+    def Standard_Progression(self, seventh):
     #Proposed function for I IV V Progression
         self.chords = []
     #If I want to ensure each chord is a seventh, add "self.scale[6]"
         #TODO:Below code through index error when it comes to the 4th, 5th, 6th chord etc. because it goes past the final item in the self.scale attribute. Find a way to loop back through the scale or iterate through the scale of the particular chord.
         for interval in self.progression:
             note = roman.roman_to_int(interval)
+            print(f'Note: {note}')
+            #If minor chord:
             if str(interval).islower == True:
                 try:
-                    chord = Chord([self.scale[note-1], self.scale[note+2], self.scale[note+2]])
+                    #chord = Chord([self.scale[note-1], self.scale[note+2], self.scale[note+2]])
+                    scale = Key(f"{self.scale[note-1]}m").getPitches()
+                    chord = Chord([scale[0], scale[2], scale[4]])
                     self.chords.append(chord)
-                    print(chord)
+                    print(f"Chord: {chord}")
                 except IndexError:
                     continue
+            #If major chord    
             else:
                 try:
-                    chord = Chord([self.scale[note-1], self.scale[note+1], self.scale[note+3]])
+                    #chord = Chord([self.scale[note-1], self.scale[note+1], self.scale[note+3]])
+                    scale = Key(f"{self.scale[note-1]}").getPitches()
+                    chord = Chord([scale[0], scale[2], scale[4]])
                     self.chords.append(chord)
-                    print(chord)
+                    print(f"Chord: {chord}")
                 except IndexError:
                     continue
         for i in self.chords:
             self.chord_stream.append(i)
         self.fp = self.chord_stream.write('midi', fp='/Users/ian/Code/Python/Classes/Music/Chord_Progression.midi')
-        #chord = Chord([self.scale[roman.roman_to_int(interval)-1], random.choice(self.key.getPitches()), random.choice(self.key.getPitches()), random.choice(self.key.getPitches()), random.choice(self.key.getPitches())]); self.chords.append(chord)
 
 
 
@@ -90,8 +85,7 @@ class Main:
 
 
 if __name__ == "__main__":
-    App = Main(key='F', interval=1, progression=['I', 'IV', 'vi', 'V', 'I'])
+    App = Main(key='A', interval=1, progression=['I', 'IV', 'vi','V', 'I'])
     #App.Melody_in_Key(notes=random.randint(5, 5))
-    #App.Chord_Progression()
-    App.Seventh_Progression()
+    App.Standard_Progression()
 
