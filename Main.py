@@ -54,10 +54,11 @@ class Main:
         '''
 
     def Standard_Progression(self, seventh = False, make_melody = False):
+        #TODO:Find new way of inputting progression...progression fails if key and chord tonalities differ(Major key, but i, iv, v)
         self.chords = []
         for interval in self.progression:
             note = roman.roman_to_int(interval)
-            print(f'Note: {note}')
+            print(f'Chord Interval: {note}')
             #If minor chord:
             if str(interval).islower == True:
                 try:
@@ -66,8 +67,9 @@ class Main:
                     if seventh == True:
                         chord = chord_notes.append(scale[6])
                     chord = Chord(chord_notes)
+                    chord.duration = Duration((random.choice(range(500, 6000, 125)))/1000)
+                    print(chord.duration)
                     self.chords.append(chord)
-                    print(f"Chord: {chord}")
                 except IndexError:
                     continue
             #If major chord    
@@ -78,13 +80,14 @@ class Main:
                     if seventh == True:
                         chord_notes.append(scale[6])
                     chord = Chord(chord_notes)
+                    chord.duration = Duration((random.choice(range(500, 6000, 125)))/1000)
+                    print(chord.duration)
                     self.chords.append(chord)
-                    print(f"Chord: {chord}")
                 except IndexError:
                     continue
         for i in self.chords:
             self.chord_stream.append(i)
-        self.fp = self.chord_stream.write('midi', fp='/Users/ian/Code/Python/Classes/Music/Chord_Progression.midi')
+        self.fp = self.chord_stream.write('midi', fp=f'/Users/ian/Code/Python/Classes/Music/Chord_Progression-{self.key}_{self.progression}.midi')
         if make_melody == True:
             self.Melody_in_Key()
 
@@ -95,7 +98,7 @@ class Main:
 
 
 if __name__ == "__main__":
-    App = Main(key='A', interval=1, progression=['I', 'vi', 'IV', 'V', 'I'])
+    App = Main(key='Em', interval=1, progression=['i', 'ii', 'v', 'i'])
     App.Melody_in_Key(notes=random.randint(5, 5))
     App.Standard_Progression(seventh=True)
 
